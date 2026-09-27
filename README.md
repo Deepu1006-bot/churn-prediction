@@ -81,6 +81,7 @@ churn-prediction/
 |-- .gitignore
 |-- README.md
 `-- requirements.txt
+
 Machine Learning Workflow
 Raw Data
    |
@@ -113,6 +114,7 @@ Staging
    |
    v
 Production
+
 Lab 3 - Git-Based Version Control
 
 Implemented:
@@ -152,7 +154,9 @@ Processed dataset generation
 Preprocessing pipeline serialization
 Output validation
 Automated pipeline execution
+
 Lab 5 Pipeline
+
 validate_data.py
        |
        v
@@ -172,7 +176,9 @@ Lab 6 - Model Registry and Lifecycle Management
 Implemented:
 
 Random Forest model training
+
 MLflow model registration
+
 Model versioning
 Preprocessing dependency tracking
 Model metadata tracking
@@ -182,7 +188,9 @@ Model performance comparison
 Production model report generation
 Model lineage tracking
 Deployment readiness information
+
 Lab 6 Pipeline
+
 train_registry.py
        |
        v
@@ -196,7 +204,9 @@ The complete Lab 6 pipeline is executed using:
 pipelines/run_lab6_registry.py
 Registered Model
 Telco_Churn_Production_Model
+
 Current Production Version
+
 Version: 1
 Stage: Production
 Production Model Performance
@@ -205,7 +215,9 @@ F1 Score   : 0.6033
 ROC-AUC    : 0.8301
 Accuracy   : 0.7630
 Precision  : 0.5427
+
 Model Hyperparameters
+
 n_estimators : 200
 max_depth    : 15
 random_state : 42
