@@ -307,6 +307,9 @@ The implementation for Labs 3, 4, 5, and 6 is version controlled and pushed to t
 
 This experiment demonstrates branch creation, commit history, merging, rollback, revert, and version traceability for the ML project.
 
+Collaborative workflow: Branch B update.
+
+
 Conclusion
 
 This project demonstrates an end-to-end MLOps workflow for customer churn prediction, including version control, experiment tracking, reproducibility, data validation, automated preprocessing, model registration, lifecycle management, and production model traceability.
