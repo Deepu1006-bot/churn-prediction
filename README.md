@@ -303,6 +303,10 @@ The project is maintained using Git and GitHub.
 
 The implementation for Labs 3, 4, 5, and 6 is version controlled and pushed to the main branch.
 
+## Experiment 3 - Git Version Control
+
+This experiment demonstrates branch creation, commit history, merging, rollback, revert, and version traceability for the ML project.
+
 Conclusion
 
 This project demonstrates an end-to-end MLOps workflow for customer churn prediction, including version control, experiment tracking, reproducibility, data validation, automated preprocessing, model registration, lifecycle management, and production model traceability.
