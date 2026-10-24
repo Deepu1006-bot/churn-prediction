@@ -1,15 +1,33 @@
+# Python virtual environments
 .venv/
-__pycache__/
-*.pyc
+.venv-*/
+venv/
 
+# Python cache
+__pycache__/
+*.py[cod]
 .ipynb_checkpoints/
 
+# MLflow local tracking
 mlruns/
 *.db
 
+# Generated model files
 models/*.pkl
-data/processed/*.npy
 
+# Generated processed data
+data/processed/*.npy
+data/processed/X_train_raw.csv
+data/processed/X_test_raw.csv
+
+# Generated inference and execution outputs
 outputs/
 logs/
 artifacts/
+
+# Temporary files and backups
+*.lab9_backup
+*.tmp
+
+# IDE files
+.vscode/
