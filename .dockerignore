@@ -1,0 +1,35 @@
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+.venv/
+.venv-*/
+venv/
+env/
+
+# Git and editor files
+.git/
+.gitignore
+.vscode/
+
+# Test cache
+.pytest_cache/
+
+# Secrets and local environment
+.env
+.env.*
+
+# Logs and local MLflow databases
+logs/
+*.log
+*.db
+mlruns/
+
+# Unnecessary training files
+data/
+notebooks/
+outputs/
+project_tree.txt

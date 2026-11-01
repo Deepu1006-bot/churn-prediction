@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: churn-prediction-api
+  labels:
+    app: churn-prediction-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: churn-prediction-api
+  template:
+    metadata:
+      labels:
+        app: churn-prediction-api
+    spec:
+      containers:
+        - name: churn-api
+          image: churn-prediction-api:lab11
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 10
