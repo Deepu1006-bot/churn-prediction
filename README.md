@@ -1,315 +1,347 @@
-# Customer Churn Prediction
+# Telco Customer Churn Prediction — MLOps Project
+
+An end-to-end Machine Learning Operations (MLOps) project that demonstrates how a customer churn prediction model can be prepared, trained, evaluated, versioned, served, monitored, and tested through automated workflows.
+
+**GitHub repository:** [Deepu1006-bot/churn-prediction](https://github.com/Deepu1006-bot/churn-prediction)  
+**Primary branch:** `main`  
+**Project:** MLOps Labs 1–13
+
+---
 
 ## Project Overview
 
-This project predicts whether a customer is likely to leave a service using machine learning techniques.
+Customer churn prediction estimates whether a customer is likely to stop using a service. This project uses a Telco Customer Churn dataset and develops an MLOps workflow around the model lifecycle, from dataset preparation to API serving, monitoring, and deployment experiments.
 
-The project follows an MLOps workflow covering data preprocessing, model training, evaluation, experiment tracking, data validation, reproducible pipelines, and model registry lifecycle management.
+The work is organized into 13 experiments covering data preparation, baseline modelling, Git version control, MLflow tracking, data validation, model registry, pipeline engineering, CI automation, failure handling, FastAPI serving, Docker/Kubernetes deployment, drift monitoring, and end-to-end integration.
+
+A key lifecycle principle is that a newly trained model is not automatically promoted to Production. Candidate models are evaluated against configured quality criteria and lifecycle decisions before deployment.
 
 ## Objectives
 
-- Predict customer churn
-- Preprocess customer data
-- Train and evaluate machine learning models
-- Compare model performance using evaluation metrics
-- Track experiments using MLflow
-- Validate dataset schema and preprocessing outputs
-- Build reproducible ML pipelines
-- Register and version trained models
-- Manage model lifecycle from Staging to Production
-- Maintain model lineage and deployment metadata
+- Prepare and validate customer churn data.
+- Build and evaluate baseline classification models.
+- Maintain reproducible code and dataset changes with Git.
+- Track experiments, metrics, parameters, and artifacts using MLflow.
+- Validate input schemas and preprocessing outputs.
+- Manage model versions and lifecycle stages.
+- Build modular and repeatable ML pipelines.
+- Automate selected checks with GitHub Actions.
+- Test pipeline failure handling and recovery.
+- Serve predictions through a FastAPI application.
+- Package the API and model using Docker.
+- Explore deployment and service management with Kubernetes.
+- Monitor API behaviour and data, prediction, and concept drift.
+- Document and test the integrated MLOps workflow.
 
-## Technologies Used
+## MLOps Experiments
 
-- Python
-- Pandas
-- NumPy
-- Scikit-learn
-- Pandera
-- MLflow
-- Matplotlib
-- Joblib
-- Jupyter Notebook
-- Git & GitHub
+| Experiment | Topic | Main work |
+|---|---|---|
+| 1 | ML project initialization and dataset preparation | Dataset inspection, missing-value and datatype analysis, preprocessing, reproducible splitting, repository organization, and documentation |
+| 2 | Baseline model development and evaluation | Logistic Regression, Decision Tree, and Random Forest experiments; evaluation metrics; model serialization |
+| 3 | Git-based version control and collaboration | Repository management, commits, branches, merges, rollback/revert, and conflict resolution |
+| 4 | Experiment tracking and reproducibility | MLflow parameters, metrics, artifacts, run comparison, and experiment lineage |
+| 5 | Data validation and reproducible pipelines | Schema checks, datatype and category validation, reusable preprocessing, and output validation |
+| 6 | Model registry and version management | Model registration, version metadata, staging/production lifecycle concepts, comparison, and traceability |
+| 7 | ML pipeline engineering | Modular preprocessing, training, validation, evaluation, and inference stages |
+| 8 | Pipeline automation and CI | Trigger-based automation and GitHub Actions workflow checks |
+| 9 | Pipeline failure handling and recovery | Simulated data/schema/artifact failures, validation, error handling, and recovery checks |
+| 10 | FastAPI model serving | Health, metadata, prediction, and batch-prediction API functionality with request validation |
+| 11 | Containerization and deployment | Docker image/container testing and Kubernetes deployment/service exercises |
+| 12 | Monitoring, drift detection, and retraining | API monitoring, data/prediction/concept drift analysis, model comparison, and retraining workflow exercises |
+| 13 | End-to-end MLOps mini project | Integration of model serving and containerized API testing, with Kubernetes exposure and project documentation |
 
-## Project Structure
+## Architecture and Workflow
+
+The project contains a model lifecycle pipeline and separate serving/monitoring components.
+
+### Model lifecycle pipeline
+
+```text
+Dataset loading
+      |
+Raw data validation
+      |
+Preprocessing
+      |
+Processed-output validation
+      |
+Model training and MLflow tracking/registration
+      |
+Model evaluation
+      |
+Quality gate
+      |
+Lifecycle comparison and model-version decision
+      |
+Deployment preparation (when applicable)
+      |
+Inference
+```
+
+### API serving and container workflow
+
+```text
+Client request
+     |
+FastAPI application
+     |
+Request/schema validation
+     |
+Model and preprocessor loading
+     |
+Prediction
+     |
+Structured response and inference logging
+```
+
+The API includes health and metadata checks, prediction endpoints, and batch prediction functionality. The Docker workflow builds an image, starts the API container, checks health, verifies that the model and preprocessor loaded, and sends a test prediction.
+
+### Monitoring workflow
+
+Monitoring components generate and combine reports for data drift, prediction drift, and concept drift. Performance and API monitoring scripts record operational metrics. Retraining and registry-update scripts are separate operations; they should be run deliberately because they can change datasets, models, or registry state.
+
+## Dataset
+
+The primary dataset is stored at:
+
+```text
+data/raw/churn.csv
+```
+
+The project also uses processed datasets and generated monitoring data under `data/processed/` and `data/monitoring/` (where present).
+
+Important dataset fields include the customer identifier, churn target, customer tenure, monthly and total charges, contract type, internet service, and payment method.
+
+For a new-data ingestion exercise, use the expected schema and follow the validation and lineage rules implemented by the project scripts. Do not replace the primary dataset with an arbitrary CSV.
+
+## Model Evaluation and Monitoring
+
+The project evaluates classification models using standard metrics, including:
+
+- Accuracy
+- Precision
+- Recall
+- F1 score
+- ROC-AUC
+- Confusion matrix
+
+The monitoring exercises include data-drift, prediction-drift, and concept-drift reports. A retrained candidate should be evaluated and compared with the existing model before any promotion or production deployment decision.
+
+**Example recorded monitoring results from the Lab 12 exercise:**
+
+- Data drift was detected in `MonthlyCharges` and `TotalCharges` (2 of 6 monitored features).
+- Prediction and probability distributions showed drift.
+- The baseline model's recall was `0.6791`, below the configured `0.70` quality threshold.
+- The retrained V2 candidate achieved recall `0.7112` and F1 `0.6230` in that exercise.
+- The V2 candidate was registered in Staging; the existing V1 model remained in Production and V2 was not promoted.
+
+These are recorded experiment results, not guaranteed results for every future run.
+
+## Technology Stack
+
+| Area | Tools |
+|---|---|
+| Programming | Python |
+| Data processing | pandas, NumPy |
+| Machine learning | scikit-learn, Random Forest and other baseline classifiers |
+| Data validation | Pandera and project validation utilities |
+| Experiment tracking and registry | MLflow |
+| API | FastAPI, Uvicorn, Pydantic |
+| Model persistence | Joblib / pickle artifacts |
+| Containerization | Docker |
+| Orchestration exercises | Kubernetes, kubectl |
+| Version control | Git and GitHub |
+| CI automation | GitHub Actions |
+| Configuration and reports | YAML, JSON, CSV |
+
+## Repository Structure
+
+The repository is organized around these main components:
 
 ```text
 churn-prediction/
-|
-|-- data/
-|   |-- raw/
-|   |   `-- churn.csv
-|   `-- processed/
-|       |-- X_train_final.npy
-|       |-- X_test_final.npy
-|       |-- y_train.npy
-|       |-- y_test.npy
-|       `-- dataset_metadata.json
-|
-|-- notebooks/
-|   `-- project_implementation.ipynb
-|
-|-- pipelines/
-|   |-- run_lab3_baseline.py
-|   |-- run_lab4_tracking.py
-|   |-- run_lab5_pipeline.py
-|   `-- run_lab6_registry.py
-|
-|-- src/
-|   |-- preprocess.py
-|   |-- train.py
-|   |-- evaluate.py
-|   |-- train_mlflow.py
-|   |-- validate_reproducibility.py
-|   |-- validate_data.py
-|   |-- preprocess_pipeline.py
-|   |-- validate_outputs.py
-|   |-- train_registry.py
-|   |-- automate_lifecycle.py
-|   `-- generate_registry_report.py
-|
-|-- models/
-|   `-- preprocessor.pkl
-|
-|-- artifacts/
-|   |-- preprocessing_summary_report.json
-|   |-- baseline_validation.csv
-|   `-- production_model_report.json
-|
-|-- mlruns/
-|-- .gitignore
-|-- README.md
-`-- requirements.txt
+├── .github/
+│   └── workflows/          # GitHub Actions workflows
+├── api/                    # FastAPI application, schemas, model loading
+├── data/
+│   ├── raw/                # Source churn datasets
+│   ├── processed/          # Processed datasets and splits
+│   └── monitoring/         # Monitoring/drift datasets (where present)
+├── deployment/             # Model, preprocessor, metadata, deployment code
+├── docs/                   # Lab reports and project documentation
+├── k8s/                    # Kubernetes deployment and service manifests
+├── models/                 # Trained model artifacts
+├── notebooks/              # Notebook-based experiments
+├── pipelines/              # Lab-specific pipeline entry points
+├── reports/                # Evaluation, quality, and lifecycle reports
+├── src/
+│   └── mlops_pipeline/     # Modular MLOps pipeline scripts
+├── tests/                  # API and integration tests
+├── Dockerfile
+├── config.yaml
+├── requirements.txt
+└── requirements-api.txt
+```
 
-Machine Learning Workflow
-Raw Data
-   |
-   v
-Data Validation
-   |
-   v
-Data Preprocessing
-   |
-   v
-Feature Preparation
-   |
-   v
-Model Training
-   |
-   v
-Model Evaluation
-   |
-   v
-MLflow Experiment Tracking
-   |
-   v
-Reproducibility Validation
-   |
-   v
-Model Registry
-   |
-   v
-Staging
-   |
-   v
-Production
+Generated files and local runtime data may not all be committed to Git. Refer to `.gitignore` before adding datasets, model artifacts, logs, virtual environments, or MLflow tracking files.
 
-Lab 3 - Git-Based Version Control
+## Setup
 
-Implemented:
+### 1. Clone the repository
 
-Git repository initialization
-Repository structure for ML projects
-Version control of source code
-Commit-based traceability
-GitHub workflow
-Baseline ML pipeline
-Version-controlled ML project files
-Lab 4 - Experiment Tracking and Reproducibility
+```bash
+git clone https://github.com/Deepu1006-bot/churn-prediction.git
+cd churn-prediction
+```
 
-Implemented:
+### 2. Create and activate a virtual environment
 
-MLflow experiment tracking
-Parameter logging
-Metric logging
-Model artifact tracking
-Preprocessing artifact tracking
-Reproducibility validation
-Experiment comparison
-ML experiment lineage
-Lab 5 - Data Validation and Reproducible ML Pipeline
+**Windows PowerShell**
 
-Implemented:
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
 
-Schema validation using Pandera
-Data type validation
-Categorical-value validation
-Missing and invalid data checks
-Train-test preprocessing pipeline
-Numerical imputation
-Feature scaling
-Categorical encoding
-Processed dataset generation
-Preprocessing pipeline serialization
-Output validation
-Automated pipeline execution
+**macOS / Linux**
 
-Lab 5 Pipeline
+```bash
+python -m venv .venv
+source .venv/bin/activate
+```
 
-validate_data.py
-       |
-       v
-preprocess_pipeline.py
-       |
-       v
-validate_outputs.py
+### 3. Install dependencies
 
-The complete Lab 5 pipeline is executed using:
+For the complete development environment:
 
-pipelines/run_lab5_pipeline.py
+```bash
+python -m pip install -r requirements.txt
+```
 
-The pipeline validates the raw dataset, preprocesses the data, saves the preprocessing pipeline, generates processed datasets, and validates the final outputs.
+For API-only execution:
 
-Lab 6 - Model Registry and Lifecycle Management
+```bash
+python -m pip install -r requirements-api.txt
+```
 
-Implemented:
+Use the dependency file appropriate to the task. Docker builds for the API use `requirements-api.txt`.
 
-Random Forest model training
+## Running the API Locally
 
-MLflow model registration
+Start the FastAPI application from the repository root:
 
-Model versioning
-Preprocessing dependency tracking
-Model metadata tracking
-Staging and Production lifecycle
-Automated model promotion
-Model performance comparison
-Production model report generation
-Model lineage tracking
-Deployment readiness information
+```bash
+uvicorn api.main:app --host 0.0.0.0 --port 8000
+```
 
-Lab 6 Pipeline
+Useful endpoints:
 
-train_registry.py
-       |
-       v
-automate_lifecycle.py
-       |
-       v
-generate_registry_report.py
+| Endpoint | Purpose |
+|---|---|
+| `GET /health` | Check API health |
+| `GET /metadata` | Check model/preprocessor loading metadata |
+| `POST /predict` | Predict churn for one customer |
+| `POST /predict/batch` | Run batch predictions |
 
-The complete Lab 6 pipeline is executed using:
+Interactive API documentation is available at:
 
-pipelines/run_lab6_registry.py
-Registered Model
-Telco_Churn_Production_Model
+```text
+http://localhost:8000/docs
+```
 
-Current Production Version
+The API requires the model and preprocessor artifacts expected by the model loader to be available in the deployment directory.
 
-Version: 1
-Stage: Production
-Production Model Performance
-Recall     : 0.6791
-F1 Score   : 0.6033
-ROC-AUC    : 0.8301
-Accuracy   : 0.7630
-Precision  : 0.5427
+## Docker
 
-Model Hyperparameters
+Build the API image:
 
-n_estimators : 200
-max_depth    : 15
-random_state : 42
-class_weight : balanced
-model_family : RandomForest
-Model Lifecycle
-New Model
-    |
-    v
-MLflow Registry
-    |
-    v
-Staging
-    |
-    v
-Performance Evaluation
-    |
-    v
-Production
+```bash
+docker build -t churn-prediction-api:lab13 .
+```
 
-The lifecycle manager evaluates staging candidates using recall and applies the defined promotion logic for moving models to Production.
+Run the container:
 
-Reproducibility
+```bash
+docker run -d --name churn-api-lab13 -p 8000:8000 churn-prediction-api:lab13
+```
 
-The project uses controlled preprocessing and fixed model configuration to support reproducible machine learning workflows.
+Check the health endpoint:
 
-Important configuration:
+```bash
+curl http://localhost:8000/health
+```
 
-random_state = 42
+View logs and stop/remove the container:
 
-A reproducibility validation script is included:
+```bash
+docker logs churn-api-lab13
+docker rm -f churn-api-lab13
+```
 
-src/validate_reproducibility.py
-Data Validation
+## Kubernetes
 
-The project uses Pandera for schema-aware validation of the Telco Customer Churn dataset.
+The repository includes Kubernetes deployment and service manifests under `k8s/`. Kubernetes exercises were performed against the local Docker Desktop Kubernetes cluster.
 
-Validation includes:
+Typical commands (use only when the local cluster is running):
 
-Column structure
-Data types
-Allowed categorical values
-Numerical constraints
-Dataset schema consistency
+```bash
+kubectl apply -f k8s/deployment.yaml
+kubectl apply -f k8s/service.yaml
+kubectl get deployments
+kubectl get pods
+kubectl get services
+```
 
-Validation results are stored as artifacts.
+If direct NodePort access is unavailable in the local environment, use port forwarding to test the service:
 
-Preprocessing
+```bash
+kubectl port-forward service/churn-prediction-service 8081:8000
+```
 
-The preprocessing workflow includes:
+Then open `http://localhost:8081/health`.
 
-Conversion of TotalCharges to numeric values
-Conversion of churn labels to binary values
-Train-test splitting
-Numerical imputation
-Standard scaling
-One-hot encoding
-Saving the fitted preprocessing pipeline
+The GitHub-hosted CI workflow does not access the developer's local Kubernetes cluster; Kubernetes verification is a separate local exercise.
 
-The preprocessing pipeline is saved as:
+## GitHub Actions
 
-models/preprocessor.pkl
-Generated Artifacts
+The repository contains separate workflows for selected lab checks. The latest verified runs on the `main` branch are:
 
-Important generated artifacts include:
+| Workflow | Commit | Result |
+|---|---|---|
+| Lab 12 – Monitoring and Drift Analysis | `ab42280` | Passed |
+| Lab 13 – End-to-End Docker API Testing | `52b371f` | Passed |
 
-artifacts/
-|
-|-- baseline_validation.csv
-|-- preprocessing_summary_report.json
-`-- production_model_report.json
+The Lab 12 workflow runs the combined drift-analysis report step and verifies that the expected report is generated. It does not perform the full retraining and model-promotion lifecycle.
 
-The production model report contains model registry status, model version, stage, run information, performance metrics, hyperparameters, and preprocessing dependency information.
+The Lab 13 workflow builds the Docker image, starts the FastAPI container, checks the health endpoint, verifies model and preprocessor loading, sends a sample prediction request, and cleans up the container.
 
-Deployment Readiness
+To view workflow runs, open the repository's **Actions** tab:
 
-The generated production registry report contains the status:
+[GitHub Actions – churn-prediction](https://github.com/Deepu1006-bot/churn-prediction/actions)
 
-READY_FOR_DEPLOYMENT
-Version Control
+## Important Reports and Documentation
 
-The project is maintained using Git and GitHub.
+Useful project documentation and reports include:
 
-The implementation for Labs 3, 4, 5, and 6 is version controlled and pushed to the main branch.
+- `docs/ARCHITECTURE.md` — system architecture.
+- `docs/LAB13_END_TO_END.md` — end-to-end project notes.
+- `docs/LAB7_PIPELINE.md` — pipeline engineering documentation.
+- `docs/LAB8_CI_REPORT.md` — CI workflow documentation.
+- `docs/LAB9_FAILURE_HANDLING_REPORT.md` — failure-handling documentation.
+- `docs/lab11_containerization_report.md` — containerization report.
+- `docs/lab11_deployment_debugging_report.md` — deployment debugging notes.
+- `reports/` and `artifacts/` — generated evaluation, validation, monitoring, and performance outputs (where present).
 
-## Experiment 3 - Git Version Control
+## Notes and Limitations
 
-This experiment demonstrates branch creation, commit history, merging, rollback, revert, and version traceability for the ML project.
+- The GitHub Actions Lab 13 workflow validates Docker image build and FastAPI container behaviour. It does not deploy to or test the developer's local Kubernetes cluster.
+- The Lab 12 CI workflow validates the combined drift-analysis report. It does not automatically prove that retraining, registry promotion, and production deployment all completed.
+- The V2 model from the recorded Lab 12 exercise was in Staging; V1 remained in Production. Do not describe V2 as deployed.
+- Scripts that ingest data, retrain models, or update the MLflow registry can modify project state. Review their purpose before running them.
+- Results and generated artifacts can change when the dataset, configuration, dependencies, or random seeds change.
+- Do not commit `.venv/`, secrets, credentials, large temporary files, or unintended local runtime artifacts.
 
-Collaborative workflow: Branch B update.
+## Conclusion
 
-
-Conclusion
-
-This project demonstrates an end-to-end MLOps workflow for customer churn prediction, including version control, experiment tracking, reproducibility, data validation, automated preprocessing, model registration, lifecycle management, and production model traceability.
+This project demonstrates the main stages of an MLOps lifecycle through 13 lab experiments: data preparation, model development, experiment tracking, validation, version management, pipeline automation, failure handling, API serving, containerization, monitoring, and end-to-end testing. The Lab 12 monitoring workflow and Lab 13 Docker/FastAPI workflow have both passed on GitHub Actions, while Kubernetes deployment was exercised separately in the local development environment.
