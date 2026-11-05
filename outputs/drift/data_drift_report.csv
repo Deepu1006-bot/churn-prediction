@@ -1,0 +1,7 @@
+feature,type,metric,score,p_value,threshold,status
+MonthlyCharges,numerical,KS,0.158268,0.0,0.1,DRIFT
+tenure,numerical,KS,0.097232,3e-06,0.1,OK
+TotalCharges,numerical,KS,0.103593,0.0,0.1,DRIFT
+Contract,categorical,JS,0.036682,,0.1,OK
+InternetService,categorical,JS,0.03598,,0.1,OK
+PaymentMethod,categorical,JS,0.042518,,0.1,OK

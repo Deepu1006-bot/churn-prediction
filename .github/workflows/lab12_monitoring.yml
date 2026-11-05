@@ -1,0 +1,39 @@
+name: Lab 12 - Monitoring and Drift Analysis
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/mlops_pipeline/12_drift_analysis.py"
+      - "outputs/drift/**"
+      - ".github/workflows/lab12_monitoring.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/mlops_pipeline/12_drift_analysis.py"
+      - "outputs/drift/**"
+      - ".github/workflows/lab12_monitoring.yml"
+  workflow_dispatch:
+
+jobs:
+  lab12-monitoring:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: python -m pip install pandas
+
+      - name: Run combined drift analysis
+        run: python src/mlops_pipeline/12_drift_analysis.py
+
+      - name: Verify drift analysis report
+        run: |
+          python -c "from pathlib import Path; import pandas as pd; p=Path('outputs/drift/drift_analysis_report.csv'); assert p.exists(), 'Drift report missing'; df=pd.read_csv(p); assert len(df)==4, 'Unexpected report rows'; print(df.to_string(index=False)); print('LAB 12 WORKFLOW PASSED')"
