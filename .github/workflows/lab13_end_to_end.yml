@@ -1,0 +1,79 @@
+name: Lab 13 - End-to-End Docker API Testing
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Dockerfile"
+      - "api/**"
+      - "deployment/**"
+      - "requirements-api.txt"
+      - ".github/workflows/lab13_end_to_end.yml"
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  docker-api-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t churn-prediction-api:lab13 .
+
+      - name: Start API container
+        run: docker run -d --name churn-api-lab13 -p 8000:8000 churn-prediction-api:lab13
+
+      - name: Wait for API health
+        run: |
+          for i in {1..30}; do
+            if curl -fsS http://localhost:8000/health; then
+              exit 0
+            fi
+            sleep 5
+          done
+          docker logs churn-api-lab13
+          exit 1
+
+      - name: Verify model loading
+        run: |
+          curl -fsS http://localhost:8000/metadata
+          python -c "import json,urllib.request; d=json.load(urllib.request.urlopen('http://localhost:8000/metadata')); assert d['model_loaded'] and d['preprocessor_loaded'], d; print('MODEL AND PREPROCESSOR LOADED')"
+
+      - name: Test customer prediction
+        run: |
+          curl -fsS -X POST http://localhost:8000/predict \
+            -H "Content-Type: application/json" \
+            -d '{
+              "customerID": "CI-TEST-001",
+              "gender": "Female",
+              "SeniorCitizen": 0,
+              "Partner": "Yes",
+              "Dependents": "No",
+              "tenure": 12,
+              "PhoneService": "Yes",
+              "MultipleLines": "No",
+              "InternetService": "Fiber optic",
+              "OnlineSecurity": "No",
+              "OnlineBackup": "Yes",
+              "DeviceProtection": "No",
+              "TechSupport": "No",
+              "StreamingTV": "Yes",
+              "StreamingMovies": "No",
+              "Contract": "Month-to-month",
+              "PaperlessBilling": "Yes",
+              "PaymentMethod": "Electronic check",
+              "MonthlyCharges": 75.5,
+              "TotalCharges": "906.0"
+            }'
+
+      - name: Show container logs
+        if: always()
+        run: docker logs churn-api-lab13
+
+      - name: Stop API container
+        if: always()
+        run: docker rm -f churn-api-lab13 || true
